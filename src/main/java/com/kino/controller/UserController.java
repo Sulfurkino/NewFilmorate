@@ -9,21 +9,26 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
-@Slf4j
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
-    private Map<Long, User> users = new HashMap<>();
+
+    private final Map<Long, User> users = new HashMap<>();
+    private long nextId = 1;
 
     @PostMapping
-    public User add(@Valid @RequestBody User user) {
-        if (Objects.isNull(user.getName()) || user.getName().isBlank()) {
+    public User create(@Valid @RequestBody User user) {
+
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        user.setId(GenerateId.INSTANCE.generateId());
 
+        user.setId(nextId++);
         users.put(user.getId(), user);
-        log.debug("пользователь с id {} добавлен", user.getId());
+
+        log.info("Добавлен пользователь с id={}", user.getId());
+
         return user;
     }
 
@@ -32,30 +37,22 @@ public class UserController {
         return new ArrayList<>(users.values());
     }
 
-
     @PutMapping
-    public User update(@Valid @RequestBody User updateUser) throws EntityNotFoundException {
-        Long id = updateUser.getId();
+    public User update(@Valid @RequestBody User user) {
 
-        if (!users.containsKey(id)) {
-            throw new EntityNotFoundException("Пользователь с таким id - " + id + " не найден");
-        }
-        User executedUser = users.get(id);
-        if (Objects.nonNull(updateUser.getName())){
-            executedUser.setName(updateUser.getName());
-        }
-        if (Objects.nonNull(updateUser.getEmail())) {
-            executedUser.setEmail(updateUser.getEmail());
-        }
-        if (Objects.nonNull(updateUser.getLogin())) {
-            executedUser.setLogin(updateUser.getLogin());
-        }
-        if (Objects.nonNull(updateUser.getBirthday())) {
-            executedUser.setBirthday(updateUser.getBirthday());
+        if (user.getId() == null || !users.containsKey(user.getId())) {
+            throw new EntityNotFoundException(
+                    "Пользователь с id=" + user.getId() + " не найден");
         }
 
-        users.put(id,executedUser);
-        log.debug("пользователь с id {} поменял свои данные", id);
-        return users.get(id);
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+
+        users.put(user.getId(), user);
+
+        log.info("Обновлен пользователь с id={}", user.getId());
+
+        return user;
     }
 }
