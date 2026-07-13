@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 @Constraint(validatedBy = ReleaseDateValidationImpl.class)
 public @interface ReleaseDateValidation {
     String startDate();
-    String errorMessage() default "{com.kino.annotation.ReleaseDateValidation.errorMessage}";
+    String message() default "{com.kino.annotation.ReleaseDateValidation.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

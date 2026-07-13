@@ -22,7 +22,7 @@ public class Film {
     private String description;
 
     @NotNull
-    @ReleaseDateValidation(startDate = "1895.12.28", errorMessage = "Укажите дату не ранее 1895.12.28")
+    @ReleaseDateValidation(startDate = "1895.12.28", message = "Укажите дату не ранее 1895.12.28")
     private LocalDate releaseDate;
 
     @NotNull
