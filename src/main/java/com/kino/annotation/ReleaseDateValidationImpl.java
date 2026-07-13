@@ -12,9 +12,15 @@ public class ReleaseDateValidationImpl implements ConstraintValidator<ReleaseDat
     public void initialize(ReleaseDateValidation constraintAnnotation) {
         startDate = constraintAnnotation.startDate();
     }
+
     @Override
-    public boolean isValid(LocalDate localDate, ConstraintValidatorContext context){
-        LocalDate currentDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
-     return currentDate.isBefore(localDate);
+    public boolean isValid(LocalDate localDate, ConstraintValidatorContext context) {
+        if (localDate == null) {
+            return false;
+        }
+        LocalDate minDate = LocalDate.parse(startDate,
+                DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+
+        return !localDate.isBefore(minDate);
     }
 }

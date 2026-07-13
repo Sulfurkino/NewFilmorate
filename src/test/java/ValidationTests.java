@@ -1,3 +1,4 @@
+import com.kino.model.Film;
 import com.kino.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,35 @@ public class ValidationTests {
         Set<ConstraintViolation<User>> errors = validator.validate(user);
         assertFalse(errors.isEmpty());
     }
+
+    @Test
+    void shouldValidateCorrectFilm() {
+        Film film = Film.builder()
+                .name("Film")
+                .description("Description")
+                .releaseDate(LocalDate.of(1895, 12, 28))
+                .duration(120)
+                .build();
+
+        Set<ConstraintViolation<Film>> errors = validator.validate(film);
+
+        assertTrue(errors.isEmpty());
+    }
+
+    @Test
+    void shouldFailIncorrectFilm() {
+        Film film = Film.builder()
+                .name("")
+                .description("")
+                .releaseDate(LocalDate.of(1895, 12, 27))
+                .duration(0)
+                .build();
+
+        Set<ConstraintViolation<Film>> errors = validator.validate(film);
+
+        assertFalse(errors.isEmpty());
+    }
+
 
 
 }
